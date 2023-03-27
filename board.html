@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시판</title>
+    <link href="./css/reset.css" rel="stylesheet" />
+    <link href="./css/common.css" rel="stylesheet" />
+    <link href="./css/board.css" rel="stylesheet" />
+    <script
+      src="https://kit.fontawesome.com/6ad5a44fe0.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <section class="notice">
+      <div class="page-title">
+        <div class="container">
+          <h3>게시판</h3>
+        </div>
+      </div>
+
+      <!-- board seach area -->
+      <div id="board-search">
+        <div class="container">
+          <div class="search-window">
+            <div class="search-wrap">
+              <!-- <label for="search" class="blind">공지사항 내용 검색</label> -->
+              <input
+                type="text"
+                name="searchName"
+                id="searchName"
+                placeholder="검색어를 입력해주세요."
+              />
+              <button id="btnSearch" class="btn btn-dark">검색</button>
+              <!-- 새로고침 -->
+              <i id="btnReload" class="fa-sharp fa-solid fa-rotate-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- board list area -->
+      <div id="board-list">
+        <div class="container">
+          <table id="tb" class="board-table">
+            <thead>
+              <tr>
+                <th scope="col" class="th-num">번호</th>
+                <th scope="col" class="th-title">제목</th>
+                <th scope="col" class="th-writer">글쓴이</th>
+                <th scope="col" class="th-date">등록일</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- regist area -->
+      <div class="btnRegistStyle">
+        <a class="btn regist" href="http://localhost/board/php/board.php"
+          >글쓰기</a
+        >
+      </div>
+    </section>
+  </body>
+</html>
+
+<script>
+  //*************************************************
+  // declare
+  //*************************************************
+  const frm = document.getElementById('frm');
+  const searchName = document.getElementById('searchName');
+  const btnSearch = document.getElementById('btnSearch');
+  const btnReload = document.getElementById('btnReload');
+
+  //*************************************************
+  // DOMContentLoaded
+  //*************************************************
+  window.addEventListener('DOMContentLoaded', () => {
+    // btnRegist.addEventListener('click', (e) => {
+    //   e.preventDefault();
+    // });
+
+    getBoardList();
+
+    searchName.addEventListener('keyup', (e) => {
+      if (e.keyCode == 13) {
+        getBoardList();
+      }
+    });
+  });
+
+  function getBoardList() {
+    let tag = '';
+    const dataSet = { searchText: searchName.value };
+
+    fetch('./php/getBoardList.php', {
+      method: 'POST',
+      body: JSON.stringify(dataSet),
+    })
+      .then((data) => data.json())
+      .then((json) => {
+        if (json.response.result.length > 0) {
+          json.response.result.map((item) => {
+            tag += `<tr>`;
+            tag += `<td>${item.idx}</td>`;
+            tag += `<td><a href="./php/view.php">${item.title}</a></td>`;
+            tag += `<td>${item.id}</td>`;
+            tag += `<td>${item.date}</td>`;
+            tag += `</tr>`;
+          });
+        } else {
+          tag += `<tr>`;
+          tag += `<td colspan='4'>검색 결과가 없습니다</td>`;
+          tag += `</tr>`;
+        }
+        document.querySelector('#tb > tbody').innerHTML = tag;
+      });
+  }
+
+  btnSearch.addEventListener('click', () => {
+    getBoardList();
+  });
+
+  btnReload.addEventListener('click', () => {
+    searchName.value = '';
+    getBoardList();
+  });
+</script>

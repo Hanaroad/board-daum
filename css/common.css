@@ -1,0 +1,28 @@
+/* css reset */
+@charset "utf-8";
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+body {
+  text-align: center;
+  padding: 50px;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* section 1 */
